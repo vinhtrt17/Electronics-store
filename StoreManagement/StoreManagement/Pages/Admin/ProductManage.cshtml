@@ -1,0 +1,97 @@
+﻿@page
+@model StoreManagement.Pages.Admin.ProductManageModel
+@{
+    Layout = "_AdminLayout";
+
+    int totalPage = (int)ViewData["TotalPage"];
+    //int currentPage = (int)ViewData["CurrentPage"];
+}
+@using System.Globalization
+<div class="container-fluid">
+    <div class="modal fade" id="checkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="bodyContent">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button id="confirmAction" type="button" class="btn btn-primary">Đồng ý</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 content">
+            <h1>Tất cả sản phẩm </h1>
+            <div class="second-nav">
+                <a asp-page="AddNewProduct"><p><i class="fa-solid fa-plus"></i>&nbsp;Thêm sản phẩm mới</p></a>
+
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Ảnh sản phẩm</th>
+                        <th scope="col">Tên sản phẩm</th>
+                        <th scope="col">Mã sản phẩm</th>
+                        <th scope="col">Giá</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.products)
+                    {
+                        <tr>
+                            <td><img src="@item.Image" class="img-responsive item-img" alt="@item.Name"></td>
+                            <td>@item.Name</td>
+                            <td>@item.Pid</td>
+                            <td>@item.Price.ToString("C",CultureInfo.CreateSpecificCulture("vn-VN")).Substring(1).Replace(",",".") ₫</td>
+                            <td>@item.Amount</td>
+
+                            <td><a asp-page="/Admin/ProductDetails" asp-route-id="@item.Pid">Xem chi tiết</a>&nbsp;|&nbsp;<a href="#" onclick="openModal('@item.Pid')">Xóa</a></td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+            <div class="paging-wrapper">
+                @if (totalPage > 1)
+                {
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            <li class="page-item @(Model.currentPage == 0 ? "disabled" : "")">
+                                <a class="page-link" asp-route-currentPage="@(Model.currentPage-1)"  tabindex="-1"><i class="fa-solid fa-angles-left"></i></a>
+                            </li>
+                            @for (int i = 0; i < totalPage; i++)
+                            {
+                                <li class="page-item @(Model.currentPage== i ? "active" : "") ">
+                                    <a class="page-link" asp-route-currentPage="@i" tabindex="-1">@(i+1)</a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.currentPage == totalPage - 1 ? "disabled" : "")">
+
+                                <a class="page-link" asp-route-currentPage="@(Model.currentPage+1)" tabindex="-1"><i class="fa-solid fa-angles-right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+<link rel="stylesheet" href="~/css/admin.css">
+}
+
+@section Scripts{
+<script src="~/js/adminmanage.js"></script>
+}

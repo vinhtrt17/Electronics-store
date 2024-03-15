@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using Models
+@{
+    string json = Context.Session.GetString("user");
+    User user = null;
+    if (!string.IsNullOrEmpty(json))
+    {
+        user = JsonConvert.DeserializeObject<User>(json);
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CellphoneStore</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Fontawe -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+
+    @await RenderSectionAsync("Styles", required: false)
+
+
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header class="header">
+        <div class="header-child-1">
+            <div class="logo">
+                <a href="/"><img src="~/img/LogoMobile.png" width="40" height="40" alt=""></a>
+                <div class="brand-name">
+                    <p class="mt-2">ShopPhoneOnline</p>
+                </div>
+            </div>
+
+
+            <div class="icons">
+                    <div class="users">
+                        <div class="fas fa-user"></div>
+                    <a href="#">Xin chào, @user.Lastname</a>
+                        <div class="dropdown-content">
+                            <a href="/HomePage/Index">Về trang chủ</a>
+                        <a href="/Authentication/Authentications?handler=Logout">Đăng xuất</a>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <a id="menu"><i class="fa-solid fa-bars"></i></a>
+    </header>
+
+    <div class="my-sidenav" id="sidenav">
+        <a href="/Admin/Dashboard"><i class="fa-solid fa-chart-line"></i>&nbsp; Tổng quan</a>
+        <a href="/Admin/Orders"><i class="fa-solid fa-file-invoice-dollar"></i>&nbsp; Đơn hàng</a>
+        <a href="#"><i class="fa-solid fa-list"></i>&nbsp; Quản lí nhà cung cấp sản phẩm</a>
+        <a href="/Admin/ProductManage"><i class="fa-solid fa-box"></i>&nbsp; Quản lí sản phẩm</a>
+        <a href="/Admin/UsersManage"><i class="fa-solid fa-users"></i>&nbsp; Quản lí người dùng</a>
+    </div>
+
+    <div id="main">
+        @RenderBody()
+    </div>
+
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <script src="~/js/admin.js"></script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

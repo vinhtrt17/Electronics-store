@@ -1,0 +1,87 @@
+﻿@page
+@model StoreManagement.Pages.HomePage.IndexModel
+@using Models
+@using System.Globalization;
+@{
+    Layout = "_Layout";
+    ViewData["title"] = "Trang chủ";
+    List<Product> products = Model.products;
+    Category category = Model.category;
+    int currentPage = Model.currentPage;
+    int totalPage = Model.totalPage;
+    int cid = 0;
+    if (category != null)
+    {
+        cid = category.Cid;
+    }
+}
+<div class="default-list col-md-12 col-12 col-sm-12">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 block-header">
+            @if (category != null)
+            {
+                <h1>Các sản phẩm của @category.Cname</h1>
+            }
+            else
+            {
+                <h1>Tất cả các sản phẩm</h1>
+            }
+        </div>
+        @if (products.Any())
+        {
+            foreach (Product product in products)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <a href="/HomePage/ProductDetails?id=@product.Pid">
+                    <div class="item-wrapper">
+                        <div class="item-img">
+                            <img src="@product.Image" class="img-responsive img-i" alt="@product.Name">
+                        </div>
+                        <div class="item-price">
+                            <h3 name="pname">@product.Name</h3>
+                                <p class="i-price" id="price" name="price">@product.Price.ToString("C",CultureInfo.CreateSpecificCulture("vn-VN")).Substring(1).Replace(",",".") ₫</p>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            };
+        }
+        else if (!products.Any())
+        {
+            <div class="col-12" style="height: 500px;">
+                <p>Không tìm thấy thiết bị nào</p>
+            </div>
+        }
+    </div>
+
+</div>
+<div class="paging">
+    @if (totalPage > 1)
+    {
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item @(Model.currentPage == 0 ? "disabled" : "")">
+                    <a class="page-link" asp-route-currentPage="@(Model.currentPage-1)" asp-route-id="@cid" tabindex="-1"><i class="fa-solid fa-angles-left"></i></a>
+                </li>
+                @for (int i = 0; i < totalPage; i++)
+                {
+                    <li class="page-item @(Model.currentPage== i ? "active" : "") ">
+                        <a class="page-link" asp-route-currentPage="@i" asp-route-id="@cid" tabindex="-1">@(i + 1)</a>
+                    </li>
+                }
+                <li class="page-item @(Model.currentPage == totalPage - 1 ? "disabled" : "")">
+                    <a class="page-link" asp-route-currentPage="@(Model.currentPage+1)" asp-route-id="@cid" tabindex="-1"><i class="fa-solid fa-angles-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+@section Styles{
+    <link rel="stylesheet" href="~/css/index.css">
+}
+@section Scripts{
+    <script src="~/js/UpdatePriceIndex.js"></script>
+    <script src="~/lib/microsoft-signalr/signalr.js"></script>
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+}

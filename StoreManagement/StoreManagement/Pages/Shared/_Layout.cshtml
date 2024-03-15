@@ -1,0 +1,158 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using Models
+@{
+    string json = Context.Session.GetString("user");
+    User user = null;
+    if (!string.IsNullOrEmpty(json))
+    {
+        user = JsonConvert.DeserializeObject<User>(json);
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ShopPhoneOnline</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Owl carousel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+          integrity="sha256-UhQQ4fxEeABh4JrcmAJ1+16id/1dnlOEVCFOxDef9Lw=" crossorigin="anonymous" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+          integrity="sha256-kksNxjDRxd/5+jGurZUJd1sdR2v+ClrCl3svESBaJqw=" crossorigin="anonymous" />
+    <!-- Fontawe -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="~/css/header.css">
+    <link rel="stylesheet" href="~/css/footer.css">
+    <link rel="stylesheet" href="~/css/layout.css">
+    @await RenderSectionAsync("Styles", required: false)
+
+
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header class="header">
+        <div class="header-child-1">
+            <div class="logo">
+                <a href="/HomePage/Index"><img src="~/img/LogoMobile.png" width="40" height="40" alt="Logo"></a>
+                <div class="brand-name">
+                    <p class="mt-2">ShopPhoneOnline</p>
+                </div>
+            </div>
+
+
+            <form action="/HomePage/SearchByName" method="Get" class="search-form h-auto">
+                <input type="search"name="value" placeholder="Bạn muốn tìm gì?" id="search-box" value="@((string)ViewData["SearchData"]!=null?(string)ViewData["SearchData"]:"")">
+                <button class="btn btn-primary rounded-0 " style="height:40px;width:44px" type="submit"><i for="search-box" class="fas fa-search"></i></button>
+            </form>
+            <div class="icons">
+                <div class="shoping-cart">
+                    <div class="fas fa-shopping-cart"></div>
+                    <a href="/Cart/ShowCart">Giỏ hàng</a>
+                </div>
+                @if (user != null)
+                {
+                    <div class="users">
+                        <div class="fas fa-user"></div>
+                        <a href="#">Xin chào, @user.Lastname</a>
+                        <div class="dropdown-content">
+                            @if (user.Role == "sa")
+                            {
+                                <a href="/Admin/Dashboard">Trang quản lí</a>
+                            }
+                            <a href="/Authentication/Profile">Thông tin tài khoản</a>
+                            <a href="/Authentication/Orders">Đơn hàng</a>
+                            <a href="/Authentication/Authentications?handler=Logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="users">
+                        <div class="fas fa-user"></div>
+                        <a href="/Authentication/Authentications">Đăng nhập</a>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="header-child-2">
+            <nav class="navbar navbar-expand-md">
+                <div class="container">
+                    <div class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav w-100 ">
+                            <li class="nav-component dropdown"style="margin-right:80px">
+                                <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">Danh mục sản phẩm</a>
+                                <div class="dropdown-menu" id="catemenu" role="menu">
+                                    <a class="dropdown-item" role="presentation" href="/HomePage/Index?id=0">Tất cả sản phẩm</a>
+                                </div>
+                            </li>
+                            <li class="nav-component dropdown ">
+                                <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#">Sản phẩm theo giá</a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a class="dropdown-item" role="presentation" href="/HomePage/SearchByPrice?id=4-5">Từ 4 - 5 triệu</a>
+                                    <a class="dropdown-item" role="presentation" href="/HomePage/SearchByPrice?id=5-10">Từ 5 - 10 triệu</a>
+                                    <a class="dropdown-item" role="presentation" href="/HomePage/SearchByPrice?id=10-30">Từ 10 - 30 triệu</a>
+                                    <a class="dropdown-item" role="presentation" href="/HomePage/SearchByPrice?id=30-50">Từ 30 - 50 triệu</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    <footer class="page-footer font-small blue pt-4 mt-auto">
+        <div class="container-fluid text-center text-md-left">
+            <div class="row">
+                <div class="col-md-12 mt-md-12 mt-12 text-center">
+                    <h5 class="text-uppercase">ShopPhoneOnline</h5>
+                    <p>Shop bán điện thoại uy tín, chất lượng cao.</p>
+
+                </div>
+
+            </div>
+            <div class="footer-copyright text-center py-3">
+                ©@DateTime.Now.Year Copyright:
+                <a href="/"> ShopPhoneOnline</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <!-- OwlCarousel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+            integrity="sha256-pTxD+DSzIwmwhOqTFN+DB+nHjO4iAsbgfyFq5K5bcE0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.js"></script>
+
+    <script src="~/js/layout.js"></script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

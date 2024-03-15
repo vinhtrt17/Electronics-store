@@ -1,0 +1,68 @@
+﻿@page
+@model StoreManagement.Pages.Authentication.OrdersDetailsModel
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using Models
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Order Details";
+    string json = HttpContext.Session.GetString("user");
+    User user = null;
+    if (!string.IsNullOrEmpty(json))
+    {
+        user = JsonConvert.DeserializeObject<User>(json);
+    }
+
+    List<Product> products = Model.products;
+    List<OrderDetail> orderDetails = Model.orderDetails;
+}
+
+<div class="row">
+    <div class="col-12 dilivery-info">
+        <h2>Thông tin vận chuyển</h2>
+        <p>Họ và tên: @user.Firstname @user.Lastname</p>
+        <p>Địa chỉ: @user.Address</p>
+        <p>Số điện thoại: @user.Phone</p>
+        <p>Ghi chú: </p>
+        <textarea id="des" readonly>@(orderDetails.FirstOrDefault().Description != null ? orderDetails.First().Description : "")</textarea>
+    </div>
+
+    <table class="table table-light">
+
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col" colspan="2">Sản phẩm</th>
+                <th scope="col">Phân loại</th>
+                <th scope="col">Đơn giá</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Số tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (var i = 0; i < orderDetails.Count(); i++)
+            {
+                <tr>
+                    <td scope="row">@(i+1)</td>
+                    <td>
+                        <img id="img-items" src="@products[i].Image" class="img-responsive" alt="">
+                    </td>
+                    <td>&nbsp;@products[i].Name</td>
+                    <td>@orderDetails[i].Color - @orderDetails[i].Storage </td>
+                    <td id="item-price">@orderDetails[i].Price</td>
+                    <td>
+                        <div>
+                            <input type="text" value="@orderDetails[i].Quantity" name="qty"
+                               class="qty-in" readonly>
+                        </div>
+                    </td>
+                    <td id="total-item-price">@orderDetails[i].TotalPrice</td>
+                </tr>
+            }
+    </table>
+</div>
+
+@section Styles{
+<link rel="stylesheet" href="~/css/cart.css">
+}
